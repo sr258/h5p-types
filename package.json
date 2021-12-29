@@ -1,0 +1,19 @@
+{
+  "name": "@h5p-types/h5p",
+  "version": "0.1.0",
+  "description": "TypeScript type definitions for H5P",
+  "main": "",
+  "scripts": {},
+  "types": "h5p.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sr258/h5p-types.git"
+  },
+  "author": "Sebastian Rettig <serettig@posteo.de>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/sr258/h5p-types/issues"
+  },
+  "homepage": "https://github.com/sr258/h5p-types#readme",
+  "typeScriptVersion": "4.4"
+}
