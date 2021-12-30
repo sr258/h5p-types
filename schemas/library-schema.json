@@ -74,19 +74,19 @@
     "dynamicDependencies": {
       "type": "array",
       "items": {
-        "$ref": "library-name-schema.json"
+        "$ref": "#/$defs/libraryName"
       }
     },
     "preloadedDependencies": {
       "type": "array",
       "items": {
-        "$ref": "library-name-schema.json"
+        "$ref": "#/$defs/libraryName"
       }
     },
     "editorDependencies": {
       "type": "array",
       "items": {
-        "$ref": "library-name-schema.json"
+        "$ref": "#/$defs/libraryName"
       }
     },
     "preloadedJs": {
@@ -100,9 +100,7 @@
             "pattern": "^((\\\\|\\/)?[a-zA-Z_\\-\\s0-9\\.]+)+\\.js$"
           }
         },
-        "required": [
-          "path"
-        ]
+        "required": ["path"]
       }
     },
     "preloadedCss": {
@@ -116,9 +114,7 @@
             "pattern": "^((\\\\|\\/)?[a-zA-Z_\\-\\s0-9\\.]+)+\\.css$"
           }
         },
-        "required": [
-          "path"
-        ]
+        "required": ["path"]
       }
     },
     "dropLibraryCss": {
@@ -132,9 +128,7 @@
             "pattern": "^[\\w0-9\\-\\.]{1,255}$"
           }
         },
-        "required": [
-          "machineName"
-        ]
+        "required": ["machineName"]
       }
     },
     "w": {
@@ -153,10 +147,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": [
-          "iframe",
-          "div"
-        ]
+        "enum": ["iframe", "div"]
       }
     },
     "fullscreen": {
@@ -176,15 +167,12 @@
         },
         "minorVersion": {
           "type": "number",
-          "description": "",      
+          "description": "",
           "minimum": 0,
-          "maximum": 99999    
+          "maximum": 99999
         }
       },
-      "required": [
-        "majorVersion",
-        "minorVersion"
-      ]
+      "required": ["majorVersion", "minorVersion"]
     }
   },
   "required": [
@@ -194,5 +182,43 @@
     "patchVersion",
     "machineName",
     "runnable"
-  ]
+  ],
+  "$defs": {
+    "libraryName": {
+      "type": "object",
+      "properties": {
+        "machineName": {
+          "type": "string",
+          "pattern": "^[\\w0-9\\-\\.]{1,255}$"
+        },
+        "majorVersion": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{1,5}$"
+            }
+          ]
+        },
+        "minorVersion": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{1,5}$"
+            }
+          ]
+        }
+      },
+      "required": ["machineName", "majorVersion", "minorVersion"]
+    }
+  }
 }
