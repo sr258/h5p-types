@@ -19,7 +19,7 @@
             "description": "The h5p libraries that must be loaded before this content type can be displayed",
             "type": "array",
             "items": {
-                "$ref": "library-name-schema.json"
+                "$ref": "#/$defs/libraryName"
             }
         },
         "mainLibrary": {
@@ -42,7 +42,7 @@
         "dynamicDependencies": {
             "type": "array",
             "items": {
-                "$ref": "library-name-schema.json"
+                "$ref": "#/$defs/libraryName"
             }
         },
         "author": {
@@ -159,5 +159,44 @@
         "preloadedDependencies",
         "mainLibrary",
         "embedTypes"
-    ]
+    ],
+    ,
+  "$defs": {
+    "libraryName": {
+      "type": "object",
+      "properties": {
+        "machineName": {
+          "type": "string",
+          "pattern": "^[\\w0-9\\-\\.]{1,255}$"
+        },
+        "majorVersion": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{1,5}$"
+            }
+          ]
+        },
+        "minorVersion": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{1,5}$"
+            }
+          ]
+        }
+      },
+      "required": ["machineName", "majorVersion", "minorVersion"]
+    }
+  }
 }
