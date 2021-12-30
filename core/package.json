@@ -1,10 +1,10 @@
 {
-  "name": "@h5p-types/h5p",
-  "version": "0.1.0",
-  "description": "TypeScript type definitions for H5P",
+  "name": "@h5p-types/h5p-core",
+  "version": "0.2.0",
+  "description": "TypeScript definitions for the JavaScript H5P core",
   "main": "",
   "scripts": {},
-  "types": "h5p.d.ts",
+  "types": "h5p-core.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sr258/h5p-types.git"
