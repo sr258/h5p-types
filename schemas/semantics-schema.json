@@ -1,0 +1,329 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "H5P semantics schema (semantics.json)",
+    "type": "array",
+    "items": {
+        "additionalProperties": false,
+        "description": "This is an entry in the semantics of a library. The semantics define who content parameters must look like.\n\nNote: Attributes can only be used by specific semantic types. See https://h5p.org/semantics for a full reference.",
+        "properties": {
+            "common": {
+                "description": "A common field is set for all instances of the library at once. In the editor, all common fields are displayed in a group at the bottom. Use this for localization / translations.",
+                "type": "boolean"
+            },
+            "decimals": {
+                "description": "(for number) the number of allowed decimals",
+                "type": "number"
+            },
+            "default": {
+                "description": "The default value of the field.",
+                "type": "string"
+            },
+            "description": {
+                "description": "An explanation text below the widget shown in the editor",
+                "type": "string"
+            },
+            "enterMode": {
+                "description": "(for text with html widget) what the html widget inserts when pressing enter",
+                "enum": ["p", "div"],
+                "type": "string"
+            },
+            "entity": {
+                "description": "(for list) The name for a single entity in a list.",
+                "type": "string"
+            },
+            "expanded": {
+                "description": "(for group) Group is expanded by default",
+                "type": "boolean"
+            },
+            "extraAttributes": {
+                "description": "Further attributes allowed in the params.",
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            },
+            "field": {
+                "$ref": "#",
+                "description": "(in lists only) defines a single field type in the list"
+            },
+            "fields": {
+                "description": "(in groups only) a list of field definitions",
+                "items": {
+                    "$ref": "#"
+                },
+                "type": "array"
+            },
+            "font": {
+                "additionalProperties": false,
+                "description": "The font choices the user has in the HTML editor widget. If set to true, the editor will display the default choices and the style will be allowed by the sanitization filter. All other styles will be removed.\n\nYou an also specify lists of allowed CSS values with a label. These are currently ignored in the server-side CSS style filter, though.",
+                "properties": {
+                    "background": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    },
+                    "color": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    },
+                    "family": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    },
+                    "height": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    },
+                    "size": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    },
+                    "spacing": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "css": {
+                                            "type": "string"
+                                        },
+                                        "default": {
+                                            "type": "boolean"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["css", "label"],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "importance": {
+                "description": "More important fields have a more prominent style in the editor.",
+                "enum": ["low", "medium", "high"],
+                "type": "string"
+            },
+            "important": {
+                "additionalProperties": false,
+                "description": "A help text that can be collapsed.",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "type": "string"
+                    }
+                },
+                "required": ["description", "example"],
+                "type": "object"
+            },
+            "isSubContent": {
+                "description": "(for group) unknown",
+                "type": "boolean"
+            },
+            "label": {
+                "description": "The text displayed in the editor for the entry. (localizable)",
+                "type": "string"
+            },
+            "max": {
+                "description": "(for number) the maximum number allowed (for list) the maximum number of elements",
+                "type": ["number", "string"]
+            },
+            "maxLength": {
+                "description": "(for text) the maximum number of characters of the text",
+                "type": "number"
+            },
+            "min": {
+                "description": "(for number) the minimum number allowed (for list) the minimum number of elements",
+                "type": ["number", "string"]
+            },
+            "name": {
+                "description": "The internal name (e.g. for referencing it in code)",
+                "type": "string"
+            },
+            "optional": {
+                "description": "Optional fields don't have to be filled in.",
+                "type": "boolean"
+            },
+            "options": {
+                "description": "(for select) the options to choose from (for library) a list of library ubernames (whitespaces instead of hyphens as separators)",
+                "items": {},
+                "type": "array"
+            },
+            "placeholder": {
+                "description": "The text displayed in a text box if the user has entered nothing so far.",
+                "type": "string"
+            },
+            "regexp": {
+                "additionalProperties": false,
+                "description": "(for text) the regexp pattern the text must match",
+                "properties": {
+                    "modifiers": {
+                        "type": "string"
+                    },
+                    "pattern": {
+                        "type": "string"
+                    }
+                },
+                "required": ["modifiers", "pattern"],
+                "type": "object"
+            },
+            "steps": {
+                "description": "(for number) the allowed steps",
+                "type": "number"
+            },
+            "subContentId": {
+                "description": "(for library) an id identifying subcontent, set by the editor; Must be formatted like this: /^\\{?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\}?$/",
+                "type": "string"
+            },
+            "tags": {
+                "description": "(for text) list of allowed html tags.",
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            },
+            "type": {
+                "description": "The object type of this entry.",
+                "enum": [
+                    "file",
+                    "text",
+                    "number",
+                    "boolean",
+                    "group",
+                    "list",
+                    "select",
+                    "library",
+                    "image",
+                    "video",
+                    "audio"
+                ],
+                "type": "string"
+            },
+            "widget": {
+                "description": "Name of the widget to use in the editor.",
+                "type": "string"
+            }
+        },
+        "required": ["name", "type"],
+        "type": "object"
+    }
+}
