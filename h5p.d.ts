@@ -1,3 +1,19 @@
+/**
+ * The H5P core that is present when H5P is used as a player.
+ * Contains the definitions for these files:
+ *  - jquery.js
+ *  - h5p.js
+ *  - h5p-event-dispatcher.js
+ *  - h5p-x-api-event.js
+ *  - h5p-x-api.js
+ *  - h5p-content-type.js
+ *  - h5p-confirmation-dialog.js
+ *  - h5p-action-bar.js
+ *  - request-queue.js
+ * 
+ * Interfaces starting with I like IIntegration are types that are not named in
+ * H5P but only added for the typings.
+ */
 declare namespace H5P {
   /**
    * The base of the event system.
@@ -130,7 +146,8 @@ declare namespace H5P {
       eventData?: any,
       extras?: { bubbles?: boolean; external?: boolean }
     ): void;
-    attach?(wrapper: JQuery);
+
+    attach?(wrapper: JQuery): void;
   }
 
   /**
@@ -145,10 +162,11 @@ declare namespace H5P {
      * @constructor
      */
     constructor(options?: { showToast: boolean });
+
     /**
      * Add request to queue. Only supports posts currently.
      */
-    add(url: any, data: any): any;
+    add(url: string, data: any): boolean;
 
     /**
      * Clear stored requests
@@ -218,7 +236,7 @@ declare namespace H5P {
      * @param instance
      *   The H5P instance
      */
-    getContentXAPIId(instance: IH5PInstance): any;
+    getContentXAPIId(instance: IH5PInstance): string;
 
     /**
      * Get the max value of the result - score part of the statement
@@ -330,9 +348,24 @@ declare namespace H5P {
   /**
    * Keep track of when the H5Ps where started.
    */
-  const opened: any[];
+  const opened: {
+    [contentId: string | number]: Date;
+  };
 
-  function ActionBar(displayOptions: any): any;
+  class ActionBar extends EventDispatcher {
+    /**
+     * @param displayOptions.export Triggers the display of the 'Download' button
+     * @param displayOptions.copyright Triggers the display of the 'Copyright' button
+     * @param displayOptions.embed Triggers the display of the 'Embed' button
+     * @param displayOptions.icon Triggers the display of the 'H5P icon' link
+     */
+    constructor(displayOptions: {
+      export: boolean;
+      copyright: boolean;
+      embed: boolean;
+      icon: boolean;
+    });
+  }
 
   class ClipboardItem {
     /**
@@ -353,7 +386,6 @@ declare namespace H5P {
     /**
      * Create a confirmation dialog
      *
-     * @param options Options for confirmation dialog
      * @param options.instance Instance that uses confirmation dialog
      * @param options.headerText Header text
      * @param options.dialogText Dialog text
@@ -364,16 +396,16 @@ declare namespace H5P {
      * @param options.skipRestoreFocus Skip restoring focus when hiding the dialog
      * @param options.classes Extra classes for popup
      */
-    constructor(options: {
-      instance: IH5PInstance;
-      headerText: string;
-      dialogText: string;
-      cancelText: string;
-      confirmText: string;
-      hideCancel: boolean;
-      hideExit: boolean;
-      skipRestoreFocus: boolean;
-      classes: any;
+    constructor(options?: {
+      instance?: IH5PInstance;
+      headerText?: string;
+      dialogText?: string;
+      cancelText?: string;
+      confirmText?: string;
+      hideCancel?: boolean;
+      hideExit?: boolean;
+      skipRestoreFocus?: boolean;
+      classes?: any;
     });
 
     /**
@@ -423,28 +455,28 @@ declare namespace H5P {
      *
      * @param newLabel
      */
-    setLabel(newLabel: string);
+    setLabel(newLabel: string): void;
 
     /**
      * Add sub content.
      *
      * @param newMedia
      */
-    addMedia(newMedia: MediaCopyright);
+    addMedia(newMedia: MediaCopyright): void;
 
     /**
      * Add sub content in front.
      *
      * @param newMedia
      */
-    addMediaInFront(newMedia: MediaCopyright);
+    addMediaInFront(newMedia: MediaCopyright): void;
 
     /**
      * Add sub content.
      *
      * @param newContent
      */
-    addContent(newContent: MediaCopyright);
+    addContent(newContent: MediaCopyright): void;
 
     /**
      * Print content copyright.
@@ -463,7 +495,6 @@ declare namespace H5P {
    * NOTE that this doesn't actually 'extend' the event dispatcher but instead
    * it creates a single instance which all content types shares as their base
    * prototype. (in some cases this may be the root of strange event behavior)
-   * @augments H5P.EventDispatcher
    */
   interface IContentType extends EventDispatcher {
     new ();
@@ -482,6 +513,8 @@ declare namespace H5P {
   }
 
   /**
+   * Factory for ContentType.
+   *
    * H5P.ContentType is a base class for all content types. Used by newRunnable()
    *
    * Functions here may be overridable by the libraries. In special cases,
@@ -490,8 +523,6 @@ declare namespace H5P {
    * NOTE that this doesn't actually 'extend' the event dispatcher but instead
    * it creates a single instance which all content types shares as their base
    * prototype. (in some cases this may be the root of strange event behavior)
-
-   * @augments H5P.EventDispatcher
    */
   function ContentType(isRootLibrary: boolean): IContentType;
 
@@ -501,7 +532,7 @@ declare namespace H5P {
    * Helper object for keeping coordinates in the same format all over.
    *
    * @deprecated
-   *   Will be removed march 2016.
+   *   Will be removed March 2016.
    */
   class Coords {
     constructor(x: number, y: number, w: number, h: number);
@@ -518,7 +549,7 @@ declare namespace H5P {
      *
      * @param field
      */
-    add(field: Field);
+    add(field: Field): void;
 
     /**
      * Get Number of fields.
@@ -531,7 +562,6 @@ declare namespace H5P {
      * Get field at given index.
      *
      * @param index
-     * @returns
      */
     get(index: number): Field;
 
@@ -582,7 +612,7 @@ declare namespace H5P {
     /**
      * Prevent this event from bubbling up to parent
      */
-    preventBubbling();
+    preventBubbling(): void;
 
     /**
      * Get bubbling status
@@ -590,14 +620,14 @@ declare namespace H5P {
      * @returns
      *   true if bubbling false otherwise
      */
-    getBubbles();
+    getBubbles(): boolean;
     /**
      * Try to schedule an event for externalDispatcher
      *
      * @returns
      *   true if external and not already scheduled, otherwise false
      */
-    scheduleForExternal();
+    scheduleForExternal(): boolean;
   }
 
   /**
@@ -625,15 +655,21 @@ declare namespace H5P {
     /**
      * @param copyright
      *   Copyright information fields.
-     * @param [labels]
+     * @param labels
      *   Translation of labels.
-     * @param [order]
+     * @param order
      *   Order of the fields.
-     * @param [extraFields]
+     * @param extraFields
      *   Add extra copyright fields.
      */
-    constructor(copyright: any, labels: any, order: any[], extraFields: any);
-    setThumbnail(newThumbnail: Thumbnail);
+    constructor(
+      copyright: { [field: string]: string },
+      labels?: { [field: string]: string },
+      order?: string[],
+      extraFields?: { [field: string]: string }
+    );
+
+    setThumbnail(newThumbnail: Thumbnail): void;
     /**
      * Checks if this copyright is undisclosed.
      * I.e. only has the license attribute set, and it's undisclosed.
@@ -656,8 +692,7 @@ declare namespace H5P {
     /**
      * Constructor
      *
-     * @param [options] Options for offline request queue
-     * @param [options.instance] The H5P instance which UI components are placed within
+     * @param options.instance The H5P instance which UI components are placed within
      */
     constructor(options: { instance: IH5PInstance });
     /**
@@ -673,7 +708,7 @@ declare namespace H5P {
    * A simple and elegant class for creating thumbnails of images.
    */
   class Thumbnail {
-    constructor(source: any, width: any, height: any);
+    constructor(source: string, width: number, height: number);
     /**
      * Print thumbnail.
      *
@@ -695,45 +730,45 @@ declare namespace H5P {
    *
    * @param element Reference element to show toast message for.
    * @param message Message to show.
-   * @param [config] Configuration.
-   * @param [config.style=h5p-toast] Style name for the tooltip.
-   * @param [config.duration=3000] Toast message length in ms.
-   * @param [config.position] Relative positioning of the toast.
-   * @param [config.position.horizontal=centered] [before|left|centered|right|after].
-   * @param [config.position.vertical=below] [above|top|centered|bottom|below].
-   * @param [config.position.offsetHorizontal=0] Extra horizontal offset.
-   * @param [config.position.offsetVertical=0] Extra vetical offset.
-   * @param [config.position.noOverflowLeft=false] True to prevent overflow left.
-   * @param [config.position.noOverflowRight=false] True to prevent overflow right.
-   * @param [config.position.noOverflowTop=false] True to prevent overflow top.
-   * @param [config.position.noOverflowBottom=false] True to prevent overflow bottom.
-   * @param [config.position.noOverflowX=false] True to prevent overflow left and right.
-   * @param [config.position.noOverflowY=false] True to prevent overflow top and bottom.
-   * @param [config.position.overflowReference=document.body] DOM reference for overflow.
+   * @param config Configuration.
+   * @param config.style=h5p-toast Style name for the tooltip.
+   * @param config.duration=3000 Toast message length in ms.
+   * @param config.position Relative positioning of the toast.
+   * @param config.position.horizontal=centered [before|left|centered|right|after].
+   * @param config.position.vertical=below [above|top|centered|bottom|below].
+   * @param config.position.offsetHorizontal=0 Extra horizontal offset.
+   * @param config.position.offsetVertical=0 Extra vetical offset.
+   * @param config.position.noOverflowLeft=false True to prevent overflow left.
+   * @param config.position.noOverflowRight=false True to prevent overflow right.
+   * @param config.position.noOverflowTop=false True to prevent overflow top.
+   * @param config.position.noOverflowBottom=false True to prevent overflow bottom.
+   * @param config.position.noOverflowX=false True to prevent overflow left and right.
+   * @param config.position.noOverflowY=false True to prevent overflow top and bottom.
+   * @param config.position.overflowReference=document.body DOM reference for overflow.
    */
   function attachToastTo(
-    element: any,
+    element: JQuery,
     message: string,
     config?: {
-      style: string;
-      duration: number;
-      position: {
-        horizontal: string;
-        vertical: string;
-        offsetHorizontal: number;
-        offsetVertical: number;
-        noOverflowLeft: boolean;
-        noOverflowRight: boolean;
-        noOverflowTop: boolean;
-        noOverflowBottom: boolean;
-        noOverflowX: boolean;
-        noOverflowY: boolean;
-        overflowReference: any;
+      style?: string;
+      duration?: number;
+      position?: {
+        horizontal?: string;
+        vertical?: string;
+        offsetHorizontal?: number;
+        offsetVertical?: number;
+        noOverflowLeft?: boolean;
+        noOverflowRight?: boolean;
+        noOverflowTop?: boolean;
+        noOverflowBottom?: boolean;
+        noOverflowX?: boolean;
+        noOverflowY?: boolean;
+        overflowReference?: any;
       };
     }
   ): any;
 
-  function buildMetadataCopyrights(metadata: any): MediaCopyright;
+  function buildMetadataCopyrights(metadata: ILicenseData): MediaCopyright;
 
   /**
    * Get library class constructor from H5P by classname.
@@ -755,15 +790,15 @@ declare namespace H5P {
   function clipboardify(clipboardItem: ClipboardItem | any): void;
 
   /**
-   * Recursivly clone the given object.
+   * Recursively clone the given object.
    *
    * @param object
    *   Object to clone.
-   * @param [recursive]
+   * @param recursive
    * @returns
    *   A clone of object.
    */
-  function cloneObject(object: any | any[], recursive: boolean): any | any[];
+  function cloneObject(object: any | any[], recursive?: boolean): any | any[];
 
   /**
    * Create title
@@ -796,13 +831,13 @@ declare namespace H5P {
    *   What content to remove data for.
    * @param dataId
    *   Identifies the set of data for this content.
-   * @param [subContentId]
+   * @param subContentId
    *   Identifies which data belongs to sub content.
    */
   function deleteUserData(
     contentId: string | number,
     dataId: string,
-    subContentId: string
+    subContentId?: string
   ): void;
 
   /**
@@ -810,7 +845,7 @@ declare namespace H5P {
    *
    * @param err Error to print.
    */
-  function error(err: any): void;
+  function error(err: Error): void;
 
   /**
    * Gather a flat list of copyright information from the given parameters.
@@ -830,7 +865,7 @@ declare namespace H5P {
     info: ContentCopyrights,
     parameters: any | any[],
     contentId: number | string,
-    extras: { metadata: any; machineName: string }
+    extras?: { metadata: any; machineName: string }
   ): void;
 
   /**
@@ -853,7 +888,7 @@ declare namespace H5P {
   /**
    * Retrieve parsed clipboard data.
    *
-   * @return {Object}
+   * @returns
    */
   function getClipboard(): any;
 
@@ -861,9 +896,9 @@ declare namespace H5P {
    * Function for getting content for a certain ID
    *
    * @param contentId
-   * @return {Object}
+   * @returns
    */
-  function getContentForInstance(contentId: string | number): IContent;
+  function getContentForInstance(contentId: string | number): IContentData;
 
   /**
    * THIS FUNCTION IS DEPRECATED, USE getPath INSTEAD
@@ -897,7 +932,7 @@ declare namespace H5P {
     instance: IH5PInstance,
     parameters: any,
     contentId: string | number,
-    metadata: any
+    metadata: ILicenseData
   ): string;
 
   /**
@@ -937,7 +972,7 @@ declare namespace H5P {
    * Find the path to the content files based on the id of the content.
    * Also identifies and returns absolute paths.
    *
-   * @param  path
+   * @param path
    *   Relative to content folder or absolute.
    * @param contentId
    *   ID of the content requesting the path.
@@ -962,7 +997,7 @@ declare namespace H5P {
     contentId: number | string,
     dataId: string,
     done: (error?: any, data?: any) => void,
-    subContentId?: stringy
+    subContentId?: string
   ): void;
 
   /**
@@ -971,7 +1006,7 @@ declare namespace H5P {
    *
    * @param target DOM Element
    */
-  function init(target: JQuery): any;
+  function init(target: JQuery): void;
 
   /**
    * Check if JavaScript path/key is loaded.
@@ -1015,11 +1050,17 @@ declare namespace H5P {
    *   Instance.
    */
   function newRunnable(
-    library: any,
+    library: {
+      library: string;
+      params: any;
+      subContentId?: string;
+      userDatas?: { state: any };
+      metadata: ILicenseData;
+    },
     contentId: string | number,
     $attachTo?: JQuery,
     skipResize?: boolean,
-    extras?: any
+    extras?: { standalone?: boolean; parent?: any; [key: string]: any }
   ): IH5PInstance;
 
   /**
@@ -1035,7 +1076,11 @@ declare namespace H5P {
    * @param handler
    *   Callback that gets triggered for events of the specified type
    */
-  function on(instance: IH5PInstance, eventType: string, handler: any): void;
+  function on(
+    instance: IH5PInstance,
+    eventType: string,
+    handler: (event: Event) => void
+  ): void;
 
   /**
    * Display a dialog containing the embed code.
@@ -1064,8 +1109,8 @@ declare namespace H5P {
    */
   function openReuseDialog(
     $element: JQuery,
-    contentData: IContent,
-    library: any,
+    contentData: IContentData,
+    library: { library: string; params: any; metadata: ILicenseData },
     instance: IH5PInstance,
     contentId: number | string
   ): void;
@@ -1154,11 +1199,11 @@ declare namespace H5P {
     dataId: string,
     data: any,
     extras?: {
-      subContentId: string;
-      preloaded: boolean;
-      deleteOnChange: boolean;
-      errorCallback: (error: any) => void;
-      async: boolean;
+      subContentId?: string;
+      preloaded?: boolean;
+      deleteOnChange?: boolean;
+      errorCallback?: (error: any) => void;
+      async?: boolean;
     }
   ): void;
 
@@ -1173,12 +1218,22 @@ declare namespace H5P {
   function shuffleArray(array: any[]): any[];
 
   /**
-   * Translation function
+   * Translate text strings.
+   *
    * @param key
+   *   Translation identifier, may only contain a-zA-Z0-9. No spaces or special chars.
    * @param vars
+   *   Data for placeholders.
    * @param ns
+   *   Translation namespace. Defaults to H5P.
+   * @returns
+   *    Translated text
    */
-  function t(key: string, vars?: any, ns?: any): any;
+  function t(
+    key: string,
+    vars?: { [placeholder: string]: string },
+    ns?: string
+  ): string;
 
   /**
    * Trigger an event on an instance
@@ -1195,8 +1250,8 @@ declare namespace H5P {
   function trigger(
     instance: IH5PInstance,
     eventType: string,
-    data: any,
-    extras: any
+    data?: any,
+    extras?: { bubbles?: boolean; external?: boolean }
   ): void;
 
   /**
@@ -1219,10 +1274,6 @@ declare namespace H5P {
    */
   const $window: JQuery;
 
-  namespace ConfirmationDialog {
-    const uniqueId: number;
-  }
-
   /**
    * When embedded the communicator helps talk to the parent page.
    */
@@ -1233,337 +1284,335 @@ declare namespace H5P {
    * listen for H5P Events here.
    */
   const externalDispatcher: EventDispatcher;
-}
 
-interface ICommunicator {
-  /**
-   * Register action listener.
-   *
-   * @param action What you are waiting for
-   * @param handler What you want done
-   */
-  on(action: string, handler: (data?: any) => void): void;
-
-  /**
-   * Send a message to the all mighty father.
-   *
-   * @param action
-   * @param data payload
-   */
-  send(action: string, data?: any): void;
-}
-
-/**
- * This is an author inside content metadata.
- */
-interface IContentAuthor {
-  name?: string;
-  role?: string;
-}
-
-/**
- * This is a change inside content metadata.
- */
-interface IContentChange {
-  author?: string;
-  date?: string;
-  log?: string;
-}
-
-/**
- * The non-technical copyright and license metadata of a content object. H5P
- * calls this "metadata" in the GUI (and in their code), but to avoid confusing
- * from our use of metadata, we call it license data.
- */
-interface ILicenseData {
-  defaultLanguage: string;
-  a11yTitle?: string;
-  license: string;
-  licenseVersion?: string;
-  yearFrom?: string;
-  yearTo?: string;
-  source?: string;
-  title: string;
-  authors?: IContentAuthor[];
-  licenseExtras?: string;
-  changes?: IContentChange[];
-  authorComments?: string;
-  contentType?: string;
-}
-
-interface IContent {
-  /**
-   * Can be used to override the URL used for getting content files.
-   * It must be a URL to which the actual filenames can be appended.
-   * Do not end it with a slash!
-   * If it is a relative URL it will be appended to the hostname that
-   * is in use (this is done in the H5P client).
-   * If it is an absolute URL it will be used directly.
-   */
-  contentUrl?: string;
-  contentUserData?: {
+  interface ICommunicator {
     /**
-     * The state as a serialized JSON object.
+     * Register action listener.
+     *
+     * @param action What you are waiting for
+     * @param handler What you want done
      */
-    state: string;
-  }[];
-  displayOptions: {
-    copy: boolean;
-    copyright: boolean;
-    embed: boolean;
-    export: boolean;
-    frame: boolean;
-    icon: boolean;
-  };
-  /**
-   * The full embed code (<iframe>...</iframe> with absolute URLs).
-   * Example: <iframe src=\"https://example.org/h5p/embed/XXX\" width=\":w\" height=\":h\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>"
-   */
-  embedCode?: string;
-  /**
-   * The download URL (absolute URL).
-   */
-  exportUrl?: string;
-  fullScreen: "0" | "1";
-  jsonContent: string;
-  /**
-   * The ubername with whitespace as separator.
-   */
-  library: string;
-  mainId?: string;
-  metadata?: ILicenseData;
-  /**
-   * The parameters.
-   */
-  params?: any;
-  /**
-   * A script html tag which can be included alongside the embed code
-   * to make the iframe size to the available width. Use absolute URLs.
-   * Example: <script src=\"https://example.org/h5p/library/js/h5p-resizer.js\" charset=\"UTF-8\"></script>
-   */
-  resizeCode?: string;
-  /**
-   * A complete list of scripts required to display the content.
-   * Includes core scripts and content type specific scripts.
-   */
-  scripts?: string[];
-  /**
-   * A complete list of styles required to display the content.
-   * Includes core scripts and content type specific styles.
-   */
-  styles?: string[];
-  /**
-   * The absolute URL to the current content. Used when generating
-   * xAPI ids. (Becomes the attribute statement.object.id of the xAPI
-   * statement. If it is a content with subcontents, the subContentId
-   * will be appended like this: URL?subContentId=XXX)
-   */
-  url?: string;
-}
+    on(action: string, handler: (data?: any) => void): void;
 
-/**
- * The integration object is used to pass information to the H5P JavaScript
- * client running in the browser about certain settings and values of the
- * server.
- */
-interface IIntegration {
-  ajax: {
     /**
-     * The Ajax endpoint called when the user state has changed
-     * Example: /h5p-ajax/content-user-data/:contentId/:dataType/:subContentId?token=XYZ
-     * You can use these placeholders:
-     * :contentId (can be null for editor)
-     * :dataType (values: state or any string)
-     * :subContentId (seems to obsolete, always 0)
-     * The H5P client will replace them with the actual values.
+     * Send a message to the all mighty father.
+     *
+     * @param action
+     * @param data payload
      */
-    contentUserData: string;
+    send(action: string, data?: any): void;
+  }
+
+  /**
+   * This is an author inside content metadata.
+   */
+  interface IContentAuthor {
+    name?: string;
+    role?: string;
+  }
+
+  /**
+   * This is a change inside content metadata.
+   */
+  interface IContentChange {
+    author?: string;
+    date?: string;
+    log?: string;
+  }
+
+  /**
+   * The non-technical copyright and license metadata of a content object. H5P
+   * calls this "metadata" in the GUI (and in their code), but to avoid confusing
+   * from our use of metadata, we call it license data.
+   */
+  interface ILicenseData {
+    defaultLanguage: string;
+    a11yTitle?: string;
+    license: string;
+    licenseVersion?: string;
+    yearFrom?: string;
+    yearTo?: string;
+    source?: string;
+    title: string;
+    authors?: IContentAuthor[];
+    licenseExtras?: string;
+    changes?: IContentChange[];
+    authorComments?: string;
+    contentType?: string;
+  }
+
+  interface IContentData {
     /**
-     * An Ajax endpoint called when the user has finished the content.
-     * Example: /h5p-ajax/set-finished.json?token=XYZ
-     * Only called when postUserStatistics is set to true.
+     * Can be used to override the URL used for getting content files.
+     * It must be a URL to which the actual filenames can be appended.
+     * Do not end it with a slash!
+     * If it is a relative URL it will be appended to the hostname that
+     * is in use (this is done in the H5P client).
+     * If it is an absolute URL it will be used directly.
      */
-    setFinished: string;
-  };
-  ajaxPath: string;
-  /**
-   * The base URL, e.g. https://example.org
-   */
-  baseUrl?: string;
-  /**
-   * The key must be of the form "cid-XXX", where XXX is the id of the content
-   */
-  contents?: {
-    [key: string]: IContent;
-  };
-  /**
-   * The files in this list are references when creating iframes.
-   */
-  core?: {
+    contentUrl?: string;
+    contentUserData?: {
+      /**
+       * The state as a serialized JSON object.
+       */
+      state: string;
+    }[];
+    displayOptions: {
+      copy: boolean;
+      copyright: boolean;
+      embed: boolean;
+      export: boolean;
+      frame: boolean;
+      icon: boolean;
+    };
     /**
-     * A list of JavaScript files that make up the H5P core
+     * The full embed code (<iframe>...</iframe> with absolute URLs).
+     * Example: <iframe src=\"https://example.org/h5p/embed/XXX\" width=\":w\" height=\":h\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>"
+     */
+    embedCode?: string;
+    /**
+     * The download URL (absolute URL).
+     */
+    exportUrl?: string;
+    fullScreen: "0" | "1";
+    jsonContent: string;
+    /**
+     * The ubername with whitespace as separator.
+     */
+    library: string;
+    mainId?: string;
+    metadata?: ILicenseData;
+    /**
+     * The parameters.
+     */
+    params?: any;
+    /**
+     * A script html tag which can be included alongside the embed code
+     * to make the iframe size to the available width. Use absolute URLs.
+     * Example: <script src=\"https://example.org/h5p/library/js/h5p-resizer.js\" charset=\"UTF-8\"></script>
+     */
+    resizeCode?: string;
+    /**
+     * A complete list of scripts required to display the content.
+     * Includes core scripts and content type specific scripts.
      */
     scripts?: string[];
     /**
-     * A list of CSS styles that make up the H5P core.
+     * A complete list of styles required to display the content.
+     * Includes core scripts and content type specific styles.
      */
     styles?: string[];
-  };
-  /**
-   * Can be null.
-   */
-  crossorigin?: any;
-  /**
-   * Can be null.
-   */
-  crossoriginCacheBuster?: any;
-  /**
-   * We pass certain configuration values to the client with the editor
-   * integration object. Note that the way to pass these values to the client
-   * is NOT standardized and in the PHP implementation it is not the same in
-   * the Drupal, Moodle and WordPress clients. For our NodeJS version
-   * we've decided to put the values into the integration object. The page
-   * created by the editor renderer has to extract these values and put
-   * them into the corresponding properties of the H5PEditor object!
-   * See /src/renderers/default.ts how this can be done!
-   */
-  editor?: ILumiEditorIntegration;
-  fullscreenDisabled?: 0 | 1;
-  hubIsEnabled: boolean;
-  /**
-   * The localization strings. The namespace can for example be 'H5P'.
-   */
-  l10n: {
-    [namespace: string]: any;
-  };
-  /**
-   * Can be null. The server can customize library behavior by setting the
-   * library config for certain machine names, as the H5P client allows it to
-   * be called by executing H5P.getLibraryConfig(machineName). This means that
-   * libraries can retrieve configuration values from the server that way.
-   */
-  libraryConfig?: {
-    [machineName: string]: any;
-  };
-  /**
-   * The URL at which the core **JavaScript** files are stored.
-   */
-  libraryUrl?: string;
-  /**
-   * The cache buster appended to JavaScript and CSS files.
-   * Example: ?q8idru
-   */
-  pluginCacheBuster?: string;
-  /**
-   * If set the URL specified in ajax.setFinished is called when the user is
-   * finished with a content object.
-   */
-  postUserStatistics: boolean;
-  reportingIsEnabled?: boolean;
-  /*
-   * How often the user state of content is saved (in seconds). Set to false
-   * to disable saving user state. Note that the user state is only saved if
-   * the user object is passed into the render method of the player. You also
-   * must set ajax.contentUserData for state saving to work.
-   */
-  saveFreq: number | boolean;
-  /**
-   * Used when generating xAPI statements.
-   */
-  siteUrl?: string;
-  /**
-   * The URL at which files can be accessed. Combined with the baseUrl by the
-   * client.
-   * Example. /h5p
-   */
-  url: string;
-  /**
-   * Used to override the auto-generated library URL (libraries means "content
-   * types" here). If this is unset, the H5P client will assume '/libraries'.
-   * Note that the URL is NOT appended to the url or baseUrl property!
-   */
-  urlLibraries?: string;
-  user: {
     /**
-     * Usage unknown.
+     * The absolute URL to the current content. Used when generating
+     * xAPI ids. (Becomes the attribute statement.object.id of the xAPI
+     * statement. If it is a content with subcontents, the subContentId
+     * will be appended like this: URL?subContentId=XXX)
      */
-    canToggleViewOthersH5PContents?: 0 | 1;
-    id?: any;
-    mail: string;
-    name: string;
-  };
-  Hub?: {
-    contentSearchUrl: string;
-  };
-}
+    url?: string;
+  }
 
-/**
- * The editor integration object is used to pass information to the page that
- * is created by the renderer. Note that this object is NOT standard H5P
- * behavior but specific to our NodeJS implementation.
- * The editor view created by the renderer has to copy these values into the
- * H5PEditor object! This is the responsibility of the implementation and NOT
- * done by the H5P client automatically!
- */
-interface ILumiEditorIntegration extends IEditorIntegration {
-  baseUrl?: string;
-  contentId?: string;
-  contentRelUrl?: string;
-  editorRelUrl?: string;
-  relativeUrl?: string;
-}
-
-/**
- * This is the H5P standard editor integration interface.
- */
-interface IEditorIntegration {
-  ajaxPath: string;
-  apiVersion: { majorVersion: number; minorVersion: number };
-  assets: {
-    css: string[];
-    js: string[];
-  };
-  basePath?: string;
-  copyrightSemantics?: any;
-  enableContentHub?: boolean;
   /**
-   * This is a reference ot a generic binary file icon used in some content
-   * types.
+   * The integration object is used to pass information to the H5P JavaScript
+   * client running in the browser about certain settings and values of the
+   * server.
    */
-  fileIcon?: {
-    height: number;
+  interface IIntegration {
+    ajax: {
+      /**
+       * The Ajax endpoint called when the user state has changed
+       * Example: /h5p-ajax/content-user-data/:contentId/:dataType/:subContentId?token=XYZ
+       * You can use these placeholders:
+       * :contentId (can be null for editor)
+       * :dataType (values: state or any string)
+       * :subContentId (seems to obsolete, always 0)
+       * The H5P client will replace them with the actual values.
+       */
+      contentUserData: string;
+      /**
+       * An Ajax endpoint called when the user has finished the content.
+       * Example: /h5p-ajax/set-finished.json?token=XYZ
+       * Only called when postUserStatistics is set to true.
+       */
+      setFinished: string;
+    };
+    ajaxPath: string;
+    /**
+     * The base URL, e.g. https://example.org
+     */
+    baseUrl?: string;
+    /**
+     * The key must be of the form "cid-XXX", where XXX is the id of the content
+     */
+    contents?: {
+      [key: `cid-${number | string}`]: IContentData;
+    };
+    /**
+     * The files in this list are references when creating iframes.
+     */
+    core?: {
+      /**
+       * A list of JavaScript files that make up the H5P core
+       */
+      scripts?: string[];
+      /**
+       * A list of CSS styles that make up the H5P core.
+       */
+      styles?: string[];
+    };
+    /**
+     * Can be null.
+     */
+    crossorigin?: any;
+    /**
+     * Can be null.
+     */
+    crossoriginCacheBuster?: any;
+    /**
+     * We pass certain configuration values to the client with the editor
+     * integration object. Note that the way to pass these values to the client
+     * is NOT standardized and in the PHP implementation it is not the same in
+     * the Drupal, Moodle and WordPress clients. For our NodeJS version
+     * we've decided to put the values into the integration object. The page
+     * created by the editor renderer has to extract these values and put
+     * them into the corresponding properties of the H5PEditor object!
+     * See /src/renderers/default.ts how this can be done!
+     */
+    editor?: IEditorIntegration;
+    fullscreenDisabled?: 0 | 1;
+    hubIsEnabled: boolean;
+    /**
+     * The localization strings. The namespace can for example be 'H5P'.
+     */
+    l10n: {
+      [namespace: string]: any;
+    };
+    /**
+     * Can be null. The server can customize library behavior by setting the
+     * library config for certain machine names, as the H5P client allows it to
+     * be called by executing H5P.getLibraryConfig(machineName). This means that
+     * libraries can retrieve configuration values from the server that way.
+     */
+    libraryConfig?: {
+      [machineName: string]: any;
+    };
+    /**
+     * The URL at which the core **JavaScript** files are stored.
+     */
+    libraryUrl?: string;
+    /**
+     * The cache buster appended to JavaScript and CSS files.
+     * Example: ?q8idru
+     */
+    pluginCacheBuster?: string;
+    /**
+     * If set the URL specified in ajax.setFinished is called when the user is
+     * finished with a content object.
+     */
+    postUserStatistics: boolean;
+    reportingIsEnabled?: boolean;
+    /*
+     * How often the user state of content is saved (in seconds). Set to false
+     * to disable saving user state. Note that the user state is only saved if
+     * the user object is passed into the render method of the player. You also
+     * must set ajax.contentUserData for state saving to work.
+     */
+    saveFreq: number | boolean;
+    /**
+     * Used when generating xAPI statements.
+     */
+    siteUrl?: string;
+    /**
+     * The URL at which files can be accessed. Combined with the baseUrl by the
+     * client.
+     * Example. /h5p
+     */
+    url: string;
+    /**
+     * Used to override the auto-generated library URL (libraries means "content
+     * types" here). If this is unset, the H5P client will assume '/libraries'.
+     * Note that the URL is NOT appended to the url or baseUrl property!
+     */
+    urlLibraries?: string;
+    user: {
+      /**
+       * Usage unknown.
+       */
+      canToggleViewOthersH5PContents?: 0 | 1;
+      id?: any;
+      mail: string;
+      name: string;
+    };
+    Hub?: {
+      contentSearchUrl: string;
+    };
+  }
+
+  /**
+   * This is the H5P standard editor integration interface.
+   */
+  interface IEditorIntegration {
+    ajaxPath: string;
+    apiVersion: { majorVersion: number; minorVersion: number };
+    assets: {
+      css: string[];
+      js: string[];
+    };
+    basePath?: string;
+    copyrightSemantics?: any;
+    enableContentHub?: boolean;
+    /**
+     * This is a reference ot a generic binary file icon used in some content
+     * types.
+     */
+    fileIcon?: {
+      height: number;
+      path: string;
+      width: number;
+    };
+    /**
+     * The path at which **temporary** files can be retrieved from.
+     */
+    filesPath: string;
+    hub?: {
+      contentSearchUrl: string;
+    };
+    language?: string;
+    libraryUrl: string;
+    metadataSemantics?: any;
+    nodeVersionId: string;
+    wysiwygButtons?: string[];
+  }
+
+  /**
+   * This describes the Path of JavaScript and CSS files in a library.json file.
+   * This single property interface exists because the library.json file expects
+   * this format.
+   */
+  interface IPath {
     path: string;
-    width: number;
-  };
-  /**
-   * The path at which **temporary** files can be retrieved from.
-   */
-  filesPath: string;
-  hub?: {
-    contentSearchUrl: string;
-  };
-  language?: string;
-  libraryUrl: string;
-  metadataSemantics?: any;
-  nodeVersionId: string;
-  wysiwygButtons?: string[];
+  }
+
+  interface IH5PInstance extends IContentType {
+    contentId: string | number;
+    subContentId?: string;
+    contentData?: {
+      metadata: ILicenseData;
+      standalone: boolean;
+    };
+    params: any;
+    parent?: any;
+    getCurrentState?: () => any;
+    $: JQuery;
+    libraryInfo:
+      | {
+          versionedName: string;
+          versionedNameNoSpaces: string;
+          machineName: string;
+          majorVersion: string;
+          minorVersion: string;
+        }
+      | any;
+  }
 }
 
-/**
- * This describes the Path of JavaScript and CSS files in a library.json file.
- * This single property interface exists because the library.json file expects
- * this format.
- */
-interface IPath {
-  path: string;
-}
-
-interface IH5PInstance {
-  contentId: string;
-  contentData: {
-    metadata: any;
-    standalone: boolean;
-  };
-  params: any;
-  trigger: (event: string, eventData?: any, extras?: any) => void;
-}
+declare var H5PIntegration: H5P.IIntegration;

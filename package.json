@@ -15,5 +15,8 @@
     "url": "https://github.com/sr258/h5p-types/issues"
   },
   "homepage": "https://github.com/sr258/h5p-types#readme",
-  "typeScriptVersion": "4.4"
+  "typeScriptVersion": "4.4",
+  "dependencies": {
+    "@types/jquery": "^3.5.11"
+  }
 }
