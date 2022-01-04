@@ -98,7 +98,7 @@
     },
     "ILogicCheck": {
       "patternProperties": {
-        "^$.*": {
+        ".*": {
           "anyOf": [
             {
               "items": {},
