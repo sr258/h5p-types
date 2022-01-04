@@ -1,235 +1,224 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
-        "IComparisonOperator": {
-            "properties": {
-                "$eq": {
-                    "anyOf": [
-                        {
-                            "items": {},
-                            "type": "array"
-                        },
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": [
-                                "string",
-                                "number",
-                                "boolean"
-                            ]
-                        }
-                    ]
-                },
-                "$gt": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
-                },
-                "$gte": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
-                },
-                "$in": {
-                    "anyOf": [
-                        {
-                            "items": {},
-                            "type": "array"
-                        },
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        }
-                    ]
-                },
-                "$lt": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
-                },
-                "$lte": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
-                },
-                "$ne": {
-                    "anyOf": [
-                        {
-                            "items": {},
-                            "type": "array"
-                        },
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        },
-                        {
-                            "type": [
-                                "string",
-                                "number",
-                                "boolean"
-                            ]
-                        }
-                    ]
-                },
-                "$nin": {
-                    "anyOf": [
-                        {
-                            "items": {},
-                            "type": "array"
-                        },
-                        {
-                            "$ref": "#/definitions/IQuery"
-                        }
-                    ]
-                }
-            },
-            "type": "object"
-        },
-        "ILogicCheck": {
-            "additionalProperties": {
-                "anyOf": [
-                    {
-                        "items": {},
-                        "type": "array"
-                    },
-                    {
-                        "$ref": "#/definitions/IComparisonOperator"
-                    },
-                    {
-                        "$ref": "#/definitions/IQuery"
-                    },
-                    {
-                        "type": [
-                            "string",
-                            "number",
-                            "boolean"
-                        ]
-                    }
-                ]
-            },
-            "type": "object"
-        },
-        "ILogicalOperator": {
-            "properties": {
-                "$and": {
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/ILogicCheck"
-                            },
-                            {
-                                "$ref": "#/definitions/IComparisonOperator"
-                            },
-                            {
-                                "$ref": "#/definitions/ILogicalOperator"
-                            }
-                        ]
-                    },
-                    "type": "array"
-                },
-                "$nor": {
-                    "items": [
-                        {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/ILogicCheck"
-                                },
-                                {
-                                    "$ref": "#/definitions/IComparisonOperator"
-                                },
-                                {
-                                    "$ref": "#/definitions/ILogicalOperator"
-                                }
-                            ]
-                        },
-                        {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/ILogicCheck"
-                                },
-                                {
-                                    "$ref": "#/definitions/IComparisonOperator"
-                                },
-                                {
-                                    "$ref": "#/definitions/ILogicalOperator"
-                                }
-                            ]
-                        }
-                    ],
-                    "maxItems": 2,
-                    "minItems": 2,
-                    "type": "array"
-                },
-                "$not": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/ILogicCheck"
-                        },
-                        {
-                            "$ref": "#/definitions/IComparisonOperator"
-                        },
-                        {
-                            "$ref": "#/definitions/ILogicalOperator"
-                        }
-                    ]
-                },
-                "$or": {
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/ILogicCheck"
-                            },
-                            {
-                                "$ref": "#/definitions/IComparisonOperator"
-                            },
-                            {
-                                "$ref": "#/definitions/ILogicalOperator"
-                            }
-                        ]
-                    },
-                    "type": "array"
-                }
-            },
-            "type": "object"
-        },
-        "IQuery": {
-            "properties": {
-                "$query": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        }
-    },
-    "items": {
-        "anyOf": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "IComparisonOperator": {
+      "properties": {
+        "$eq": {
+          "anyOf": [
             {
-                "$ref": "#/definitions/ILogicCheck"
+              "items": {},
+              "type": "array"
             },
             {
-                "$ref": "#/definitions/ILogicalOperator"
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": ["string", "number", "boolean"]
             }
-        ]
+          ]
+        },
+        "$gt": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "$gte": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "$in": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "$ref": "#/definitions/IQuery"
+            }
+          ]
+        },
+        "$lt": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "$lte": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "$ne": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": ["string", "number", "boolean"]
+            }
+          ]
+        },
+        "$nin": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "$ref": "#/definitions/IQuery"
+            }
+          ]
+        }
+      },
+      "type": "object"
     },
-    "type": "array"
+    "ILogicCheck": {
+      "patternProperties": {
+        "^$.*": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "$ref": "#/definitions/IComparisonOperator"
+            },
+            {
+              "$ref": "#/definitions/IQuery"
+            },
+            {
+              "type": ["string", "number", "boolean"]
+            }
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "ILogicalOperator": {
+      "properties": {
+        "$and": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/ILogicCheck"
+              },
+              {
+                "$ref": "#/definitions/IComparisonOperator"
+              },
+              {
+                "$ref": "#/definitions/ILogicalOperator"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "$nor": {
+          "items": [
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/ILogicCheck"
+                },
+                {
+                  "$ref": "#/definitions/IComparisonOperator"
+                },
+                {
+                  "$ref": "#/definitions/ILogicalOperator"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/ILogicCheck"
+                },
+                {
+                  "$ref": "#/definitions/IComparisonOperator"
+                },
+                {
+                  "$ref": "#/definitions/ILogicalOperator"
+                }
+              ]
+            }
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "$not": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ILogicCheck"
+            },
+            {
+              "$ref": "#/definitions/IComparisonOperator"
+            },
+            {
+              "$ref": "#/definitions/ILogicalOperator"
+            }
+          ]
+        },
+        "$or": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/ILogicCheck"
+              },
+              {
+                "$ref": "#/definitions/IComparisonOperator"
+              },
+              {
+                "$ref": "#/definitions/ILogicalOperator"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "IQuery": {
+      "properties": {
+        "$query": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "items": {
+    "anyOf": [
+      {
+        "$ref": "#/definitions/ILogicCheck"
+      },
+      {
+        "$ref": "#/definitions/ILogicalOperator"
+      }
+    ]
+  },
+  "type": "array"
 }
-
